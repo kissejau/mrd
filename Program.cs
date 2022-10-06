@@ -16,7 +16,6 @@ app.Run();
 
 void RegisterServicies(IServiceCollection services)
 {
-    services.AddControllers();
     services.AddEndpointsApiExplorer();
 
     services.AddTransient<IApi, UserApi>();

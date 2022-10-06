@@ -1,12 +1,13 @@
 public record User
 {
-    public Guid? Id { get; init; }
+    private string _id { get; init; } = Guid.NewGuid().ToString();
+    public string Id => _id; // GENIUS
 
     [Required]
-    public string? Login { get; set; } = string.Empty;
+    public string? Login { get; set; }
 
     [Required]
-    public string? Password { get; set; } = string.Empty;
+    public string? Password { get; set; }
 
     public string? Name { get; set; }
 
@@ -15,6 +16,7 @@ public record User
     public Gender? Gender { get; set; }
 
     public Role? Role { get; set; }
+
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

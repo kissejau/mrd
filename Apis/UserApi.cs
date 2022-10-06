@@ -4,11 +4,32 @@ public class UserApi : IApi
 
     public void Register(WebApplication app)
     {
-        app.MapGet("/", () => "Hello");
 
-        app.MapGet("/users", Get);
+        app.MapGet("/user/{id}", GetById)
+        .Produces<List<User>>(StatusCodes.Status202Accepted)
+        .WithName("GetUsers")
+        .WithTags("Getters");
 
-        app.MapPost("/user", Post);
+        app.MapGet("/user", Get)
+        .Accepts<User>("application/json")
+        .Produces<User>(StatusCodes.Status202Accepted)
+        .WithName("GetUserById")
+        .WithTags("Getters");
+
+        app.MapPost("/user", Post)
+        .Accepts<User>("application/json")
+        .WithName("UpdateUser")
+        .WithTags("Updaters");
+
+        app.MapPut("/user/{id}", PutById)
+        .Accepts<User>("application/json")
+        .Produces<User>(StatusCodes.Status201Created)
+        .WithName("CreateUser")
+        .WithTags("Creators");
+
+        app.MapDelete("/user/{id}", DeleteById)
+        .WithName("DeleteUser")
+        .WithTags("Deleters");
     }
 
     private IResult Get()
@@ -16,11 +37,47 @@ public class UserApi : IApi
         return Results.Ok(users);
     }
 
+    private IResult GetById(string id)
+    {
+        var u = users.Where(u => u.Id.ToString() == id).ToArray();
+        if (u.Length != 1)
+            return Results.NotFound();
+        return Results.Ok(u);
+
+    }
     private IResult Post([FromBody] User user)
     {
-        if (user == null)
-            throw new Exception("User is not valid.");
+        if (user == null || user.Login == null || user.Password == null)
+            return Results.BadRequest(user);
         users.Add(user);
-        return Results.Ok(user);
+        return Results.Created($"/user/{user.Id}", user);
     }
+
+    private IResult PutById([FromBody] User user, string id)
+    {
+        var u = users.Where(u => u.Id.ToString() == id).ToArray();
+        if (u.Length != 1)
+            return Results.BadRequest();
+
+
+        var temp = u[0];
+
+        if (!(user.Login == null)) temp.Login = user.Login;
+        if (!(user.Password == null)) temp.Password = user.Password;
+        if (!(user.Name == null)) temp.Name = user.Name;
+        if (!(user.Surname == null)) temp.Surname = user.Surname;
+        if (!(user.Role == null)) temp.Role = user.Role;
+        if (!(user.Gender == null)) temp.Gender = user.Gender;
+
+        return Results.Ok(temp);
+    }
+
+    private IResult DeleteById(string id)
+    {
+        var u = users.Where(u => u.Id.ToString() == id).ToArray();
+        if (u.Length != 1)
+            return Results.BadRequest();
+        return Results.Ok(users.Remove(u[0]));
+    }
+
 }
