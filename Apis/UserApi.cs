@@ -2,6 +2,13 @@ public class UserApi : IApi
 {
     private List<User> users = new();
 
+    private UserDAO db;
+
+    public UserApi()
+    {
+        db = new UserDAO();
+    }
+
     public void Register(WebApplication app)
     {
 
@@ -50,6 +57,7 @@ public class UserApi : IApi
         if (user == null || user.Login == null || user.Password == null)
             return Results.BadRequest(user);
         users.Add(user);
+        // db.Create(user);
         return Results.Created($"/user/{user.Id}", user);
     }
 

@@ -1,8 +1,5 @@
-public record User
+public record User : Entity
 {
-    private string _id { get; init; } = Guid.NewGuid().ToString();
-    public string Id => _id; // GENIUS
-
     [Required]
     public string? Login { get; set; }
 
@@ -17,13 +14,18 @@ public record User
 
     public Role? Role { get; set; }
 
+    public DateTime RegDate { get; } = DateTime.Now;
+
+    public List<string> Posts { get; set; } = new List<string>();
+
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Gender
 {
-    Brogy,
-    Dorry
+    Male,
+    Female,
+    None
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

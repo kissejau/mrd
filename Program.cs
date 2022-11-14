@@ -12,6 +12,7 @@ foreach (var api in apis)
     api.Register(app);
 }
 
+
 app.Run();
 
 void RegisterServicies(IServiceCollection services)
@@ -19,6 +20,8 @@ void RegisterServicies(IServiceCollection services)
     services.AddEndpointsApiExplorer();
 
     services.AddTransient<IApi, UserApi>();
+    services.AddTransient<IApi, PostApi>();
+    services.AddTransient<IApi, ReplyApi>();
 
     services.AddCors(opt =>
     {
@@ -27,6 +30,8 @@ void RegisterServicies(IServiceCollection services)
             policy.WithOrigins("https://restninja.io").AllowAnyHeader();
         });
     });
+
+    services.AddSwaggerGen();
 }
 
 void Configure(WebApplication app)
@@ -34,4 +39,7 @@ void Configure(WebApplication app)
     app.UseCors("origins");
 
     app.UseHttpsRedirection();
+
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
