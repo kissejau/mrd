@@ -1,10 +1,12 @@
+using Microsoft.Extensions.Primitives;
+
 public record User : Entity
 {
     [Required]
-    public string? Login { get; set; }
+    public string Login { get; set; }
 
     [Required]
-    public string? Password { get; set; }
+    public string Password { get; set; }
 
     public string? Name { get; set; }
 
@@ -13,8 +15,6 @@ public record User : Entity
     public Gender? Gender { get; set; }
 
     public Role? Role { get; set; }
-
-    public DateTime RegDate { get; } = DateTime.Now;
 
     public List<string> Posts { get; set; } = new List<string>();
 

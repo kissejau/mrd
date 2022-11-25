@@ -11,7 +11,7 @@ foreach (var api in apis)
         throw new Exception("Api is null");
     api.Register(app);
 }
-
+System.Diagnostics.Debug.WriteLine("Debug message");
 
 app.Run();
 
@@ -42,4 +42,5 @@ void Configure(WebApplication app)
 
     app.UseSwagger();
     app.UseSwaggerUI();
+    Console.WriteLine("!!!!!!!1111111111111111111111!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11111111111111111");
 }

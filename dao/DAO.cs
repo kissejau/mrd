@@ -1,11 +1,12 @@
 public interface DAO<T>
 {
-    // List<T> List();
+    List<T> List();
     void Create(T t);
 
-    // T Get(string id);
+    T Get(string id);
 
-    // void Update(T t, string id);
+    bool Update(T t, string id);
 
-    // void Delete(string id);
+    bool Delete(string id);
 }
+

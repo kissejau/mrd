@@ -1,6 +1,9 @@
 public class PostApi : IApi
 {
     private List<Post> posts = new();
+    // private UserDAO db;
+
+    // public PostApi() { db = new UserDAO(); }
 
     public void Register(WebApplication app)
     {

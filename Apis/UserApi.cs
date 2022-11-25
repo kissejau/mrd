@@ -1,6 +1,6 @@
 public class UserApi : IApi
 {
-    private List<User> users = new();
+    // private List<User> users = new();
 
     private UserDAO db;
 
@@ -41,51 +41,66 @@ public class UserApi : IApi
 
     private IResult Get()
     {
-        return Results.Ok(users);
+        Console.WriteLine("GET_USERS()");
+        // return Results.Ok(users);
+        return Results.Ok(db.List());
     }
 
     private IResult GetById(string id)
     {
-        var u = users.Where(u => u.Id.ToString() == id).ToArray();
-        if (u.Length != 1)
-            return Results.NotFound();
-        return Results.Ok(u);
+        Console.WriteLine("GET_USER_BY_ID()");
+        User user = db.Get(id);
+        // var u = users.Where(u => u.Id.ToString() == id).ToArray();
+        // if (u.Length != 1)
+        //     return Results.NotFound();
+        if (user != null)
+            return Results.Ok(db.Get(id));
+        return Results.NotFound();
 
     }
     private IResult Post([FromBody] User user)
     {
+        Console.WriteLine("ADD_USER()");
         if (user == null || user.Login == null || user.Password == null)
             return Results.BadRequest(user);
-        users.Add(user);
-        // db.Create(user);
+        // users.Add(user);
+        db.Create(user);
         return Results.Created($"/user/{user.Id}", user);
     }
 
     private IResult PutById([FromBody] User user, string id)
     {
-        var u = users.Where(u => u.Id.ToString() == id).ToArray();
-        if (u.Length != 1)
-            return Results.BadRequest();
+        Console.WriteLine("CHANGE_USER()");
+        // var u = users.Where(u => u.Id.ToString() == id).ToArray();
+        // if (u.Length != 1)
+        //     return Results.BadRequest();
 
 
-        var temp = u[0];
+        // var temp = u[0];
 
-        if (!(user.Login == null)) temp.Login = user.Login;
-        if (!(user.Password == null)) temp.Password = user.Password;
-        if (!(user.Name == null)) temp.Name = user.Name;
-        if (!(user.Surname == null)) temp.Surname = user.Surname;
-        if (!(user.Role == null)) temp.Role = user.Role;
-        if (!(user.Gender == null)) temp.Gender = user.Gender;
+        // if (!(user.Login == null)) temp.Login = user.Login;
+        // if (!(user.Password == null)) temp.Password = user.Password;
+        // if (!(user.Name == null)) temp.Name = user.Name;
+        // if (!(user.Surname == null)) temp.Surname = user.Surname;
+        // if (!(user.Role == null)) temp.Role = user.Role;
+        // if (!(user.Gender == null)) temp.Gender = user.Gender;
 
-        return Results.Ok(temp);
+        bool fl = db.Update(user, id);
+        if (fl)
+            return Results.Ok(db.Get(id));
+        return Results.BadRequest();
     }
 
     private IResult DeleteById(string id)
     {
-        var u = users.Where(u => u.Id.ToString() == id).ToArray();
-        if (u.Length != 1)
-            return Results.BadRequest();
-        return Results.Ok(users.Remove(u[0]));
+        Console.WriteLine("DELETE_USER()");
+        // var u = users.Where(u => u.Id.ToString() == id).ToArray();
+        // if (u.Length != 1)
+        bool fl = db.Delete(id);
+        if (fl)
+            return Results.Ok(id);
+        return Results.BadRequest();
+
     }
 
 }

@@ -1,4 +1,9 @@
 /.vscode
+/.idea
+/.vs
 
 /obj
 /bin
+
+appsettings.Development.json
+
