@@ -2,6 +2,12 @@ public class ReplyApi : IApi
 {
 
     private List<Reply> replies = new();
+    private ReplyDAO db;
+
+    public ReplyApi()
+    {
+        db = new ReplyDAO();
+    }
 
     public void Register(WebApplication app)
     {
@@ -34,46 +40,46 @@ public class ReplyApi : IApi
 
     private IResult Get()
     {
-        return Results.Ok(replies);
+        Console.WriteLine("GET_REPLIES()");
+        return Results.Ok(db.List());
     }
 
     private IResult GetById(string id)
     {
-        var u = replies.Where(u => u.Id.ToString() == id).ToArray();
-        if (u.Length != 1)
+        Console.WriteLine("GET_REPLY_BY_ID()");
+        Reply r = db.Get(id);
+        if (r == null)
             return Results.NotFound();
-        return Results.Ok(u);
+        return Results.Ok(r);
 
     }
     private IResult Post([FromBody] Reply reply)
     {
+        Console.WriteLine("CREATE_REPLY()");
         if (reply == null || reply.UserId == null || reply.PostId == null)
             return Results.BadRequest(reply);
-        replies.Add(reply);
-        // db.Create(reply);
+        db.Create(reply);
         return Results.Created($"/reply/{reply.Id}", reply);
     }
 
     private IResult PutById([FromBody] Reply reply, string id)
     {
-        var u = replies.Where(u => u.Id.ToString() == id).ToArray();
-        if (u.Length != 1)
-            return Results.BadRequest();
+        Console.WriteLine("CHANGE_REPLY()");
+        bool fl = db.Update(reply, id);
 
-
-        var temp = u[0];
-
-        if (!(reply.Context == null)) temp.Context = reply.Context;
-
-        return Results.Ok(temp);
+        if (fl)
+            return Results.Ok(db.Get(id));
+        return Results.BadRequest();
     }
 
     private IResult DeleteById(string id)
     {
-        var u = replies.Where(u => u.Id.ToString() == id).ToArray();
-        if (u.Length != 1)
-            return Results.BadRequest();
-        return Results.Ok(replies.Remove(u[0]));
+        Console.WriteLine("DELETE_Reply()");
+
+        bool fl = db.Delete(id);
+        if (fl)
+            return Results.Ok(id);
+        return Results.BadRequest();
     }
 
 }
