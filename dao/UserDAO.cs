@@ -97,6 +97,8 @@ class UserDAO : DAO<User>
             // Console.WriteLine($"|true: {rdr[0]}|");
             // Console.WriteLine($"|id:{rdr[0]}|");
         }
+        rdr.Close();
+
         return null;
     }
 
@@ -132,15 +134,22 @@ class UserDAO : DAO<User>
                 command += $" WHERE id=\'{id}\';";
                 // Console.WriteLine(cmd.CommandText);
                 Console.WriteLine("Changed!!!");
-                rdr.Close();
-                Console.WriteLine(command);
-                cmd.CommandText = command;
-                cmd.ExecuteNonQuery();
+                break;
 
-                return true;
+
             }
             // Console.WriteLine($"|true: {rdr[0]}|");
             // Console.WriteLine($"|id:{rdr[0]}|");
+        }
+        rdr.Close();
+
+        if (command != String.Empty)
+        {
+            Console.WriteLine(command);
+            cmd.CommandText = command;
+            cmd.ExecuteNonQuery();
+
+            return true;
         }
         return false;
     }
@@ -155,12 +164,18 @@ class UserDAO : DAO<User>
         {
             if (rdr[0].ToString() == id)
             {
-                rdr.Close();
-                cmd.CommandText = $"DELETE FROM Users WHERE id=\'{id}\'";
-                cmd.ExecuteNonQuery();
-                Console.WriteLine(cmd.CommandText);
-                return true;
+                command = $"DELETE FROM Users WHERE id=\'{id}\'";
+                break;
             }
+        }
+        rdr.Close();
+
+        if (command != String.Empty)
+        {
+            cmd.CommandText = command;
+            cmd.ExecuteNonQuery();
+            Console.WriteLine(cmd.CommandText);
+            return true;
         }
         return false;
     }

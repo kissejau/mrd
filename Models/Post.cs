@@ -6,8 +6,6 @@ public record Post : Entity
 
     public string? Context { get; set; }
 
-    public DateTime CreateDate { get; set; } = DateTime.Now;
-
     [Required]
     public string? UserId { get; set; }
 

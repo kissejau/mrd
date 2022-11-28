@@ -1,9 +1,12 @@
 public class PostApi : IApi
 {
     private List<Post> posts = new();
-    // private UserDAO db;
+    private PostDAO db;
 
-    // public PostApi() { db = new UserDAO(); }
+    public PostApi()
+    {
+        db = new PostDAO();
+    }
 
     public void Register(WebApplication app)
     {
@@ -36,47 +39,49 @@ public class PostApi : IApi
 
     private IResult Get()
     {
-        return Results.Ok(posts);
+        Console.WriteLine("GET_POSTS()");
+        return Results.Ok(db.List());
     }
 
     private IResult GetById(string id)
     {
-        var u = posts.Where(u => u.Id.ToString() == id).ToArray();
-        if (u.Length != 1)
-            return Results.NotFound();
-        return Results.Ok(u);
+        Console.WriteLine("GET_POST_BY_ID()");
+        Post p = db.Get(id);
+        if (p != null)
+            return Results.Ok(p);
+        return Results.NotFound();
 
     }
     private IResult Post([FromBody] Post post)
     {
+        Console.WriteLine("CREATE_POST()");
         if (post == null || post.Title == null || post.UserId == null)
             return Results.BadRequest(post);
-        posts.Add(post);
-        // db.Create(post);
+        // posts.Add(post);
+        db.Create(post);
         return Results.Created($"/post/{post.Id}", post);
     }
 
     private IResult PutById([FromBody] Post post, string id)
     {
-        var u = posts.Where(u => u.Id.ToString() == id).ToArray();
-        if (u.Length != 1)
-            return Results.BadRequest();
+        Console.WriteLine("CHANGE_POST()");
+
+        bool fl = db.Update(post, id);
 
 
-        var temp = u[0];
-
-        if (!(post.Title == null)) temp.Title = post.Title;
-        if (!(post.Context == null)) temp.Context = post.Context;
-
-        return Results.Ok(temp);
+        if (fl)
+            return Results.Ok(db.Get(id));
+        return Results.BadRequest();
     }
 
     private IResult DeleteById(string id)
     {
-        var u = posts.Where(u => u.Id.ToString() == id).ToArray();
-        if (u.Length != 1)
-            return Results.BadRequest();
-        return Results.Ok(posts.Remove(u[0]));
+        Console.WriteLine("DELETE_POST()");
+
+        bool fl = db.Delete(id);
+        if (fl)
+            return Results.Ok(id);
+        return Results.BadRequest();
     }
 
 }
