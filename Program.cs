@@ -23,6 +23,9 @@ void RegisterServicies(IServiceCollection services)
     services.AddTransient<IApi, PostApi>();
     services.AddTransient<IApi, ReplyApi>();
 
+    services.AddTransient<DAO<User>, UserDAO>();
+    services.AddTransient<DAO<Post>, PostDAO>();
+
     services.AddCors(opt =>
     {
         opt.AddPolicy("origins", policy =>
@@ -42,5 +45,4 @@ void Configure(WebApplication app)
 
     app.UseSwagger();
     app.UseSwaggerUI();
-    Console.WriteLine("!!!!!!!1111111111111111111111!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11111111111111111");
 }

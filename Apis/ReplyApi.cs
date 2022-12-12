@@ -3,10 +3,12 @@ public class ReplyApi : IApi
 
     private List<Reply> replies = new();
     private ReplyDAO db;
+    private ReplyService service;
 
     public ReplyApi()
     {
         db = new ReplyDAO();
+        service = new ReplyService();
     }
 
     public void Register(WebApplication app)
@@ -58,6 +60,10 @@ public class ReplyApi : IApi
         Console.WriteLine("CREATE_REPLY()");
         if (reply == null || reply.UserId == null || reply.PostId == null)
             return Results.BadRequest(reply);
+        if (!service.isPostExist(reply.PostId) || !service.isUserExist(reply.UserId))
+            return Results.BadRequest(reply);
+        service.InsertIdIntoPost(reply.Id, reply.PostId);
+        service.InsertIdIntoUser(reply.Id, reply.UserId);
         db.Create(reply);
         return Results.Created($"/reply/{reply.Id}", reply);
     }

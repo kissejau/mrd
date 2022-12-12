@@ -3,10 +3,11 @@ public class UserApi : IApi
     // private List<User> users = new();
 
     private UserDAO db;
-
+    private UserService service;
     public UserApi()
     {
         db = new UserDAO();
+        service = new UserService();
     }
 
     public void Register(WebApplication app)
@@ -62,6 +63,8 @@ public class UserApi : IApi
     {
         Console.WriteLine("ADD_USER()");
         if (user == null || user.Login == null || user.Password == null)
+            return Results.BadRequest(user);
+        if (service.isLoginExist(db.List(), user.Login))
             return Results.BadRequest(user);
         // users.Add(user);
         db.Create(user);

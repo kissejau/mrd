@@ -3,9 +3,12 @@ public class PostApi : IApi
     private List<Post> posts = new();
     private PostDAO db;
 
+    private PostService service;
+
     public PostApi()
     {
         db = new PostDAO();
+        service = new PostService();
     }
 
     public void Register(WebApplication app)
@@ -57,8 +60,11 @@ public class PostApi : IApi
         Console.WriteLine("CREATE_POST()");
         if (post == null || post.Title == null || post.UserId == null)
             return Results.BadRequest(post);
+        if (!service.isUserExist(post.UserId))
+            return Results.BadRequest(post);
         // posts.Add(post);
         db.Create(post);
+        service.InsertIdIntoUser(post.Id, post.UserId);
         return Results.Created($"/post/{post.Id}", post);
     }
 
