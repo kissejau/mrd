@@ -73,7 +73,6 @@ class UserDAO : DAO<User>
         {
             if (rdr[0].ToString() == id)
             {
-                Console.WriteLine(((string[])rdr[8])[0]);
                 user.SetId(rdr[0].ToString());
                 user.Login = rdr[1].ToString();
                 user.Password = rdr[2].ToString();

@@ -100,6 +100,8 @@ public class UserApi : IApi
         // var u = users.Where(u => u.Id.ToString() == id).ToArray();
         // if (u.Length != 1)
         bool fl = db.Delete(id);
+        service.DeleteInserts(id);
+
         if (fl)
             return Results.Ok(id);
         return Results.BadRequest();

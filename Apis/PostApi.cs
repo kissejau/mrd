@@ -85,6 +85,8 @@ public class PostApi : IApi
         Console.WriteLine("DELETE_POST()");
 
         bool fl = db.Delete(id);
+        service.DeleteInserts(id);
+
         if (fl)
             return Results.Ok(id);
         return Results.BadRequest();

@@ -25,6 +25,7 @@ void RegisterServicies(IServiceCollection services)
 
     services.AddTransient<DAO<User>, UserDAO>();
     services.AddTransient<DAO<Post>, PostDAO>();
+    services.AddTransient<DAO<Reply>, ReplyDAO>();
 
     services.AddCors(opt =>
     {
